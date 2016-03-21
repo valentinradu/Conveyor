@@ -7,24 +7,32 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		F71FF7361CA01548007AEF68 /* Dictionary+Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71FF7351CA01548007AEF68 /* Dictionary+Base.swift */; };
+		F71FF7401CA02921007AEF68 /* String+Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71FF73F1CA02921007AEF68 /* String+Base.swift */; };
 		F74CFA561C92BA9000B7C0B9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74CFA551C92BA9000B7C0B9 /* main.swift */; };
+		F7CE4FD31C9310CF005039FA /* NSFileManager+CO.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CE4FD21C9310CF005039FA /* NSFileManager+CO.swift */; };
+		F7CE4FD51C93110B005039FA /* Swift+CO.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CE4FD41C93110B005039FA /* Swift+CO.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		F74CFA501C92BA9000B7C0B9 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			buildActionMask = 12;
+			dstPath = usr/share/man/man1;
+			dstSubfolderSpec = 7;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 1;
+			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		F71FF7351CA01548007AEF68 /* Dictionary+Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Dictionary+Base.swift"; path = "../Dictionary+Base.swift"; sourceTree = "<group>"; };
+		F71FF73F1CA02921007AEF68 /* String+Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Base.swift"; sourceTree = "<group>"; };
 		F74CFA521C92BA9000B7C0B9 /* Conveyor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Conveyor; sourceTree = BUILT_PRODUCTS_DIR; };
 		F74CFA551C92BA9000B7C0B9 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		F7CE4FD21C9310CF005039FA /* NSFileManager+CO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+CO.swift"; sourceTree = "<group>"; };
+		F7CE4FD41C93110B005039FA /* Swift+CO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Swift+CO.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +66,10 @@
 			isa = PBXGroup;
 			children = (
 				F74CFA551C92BA9000B7C0B9 /* main.swift */,
+				F7CE4FD41C93110B005039FA /* Swift+CO.swift */,
+				F7CE4FD21C9310CF005039FA /* NSFileManager+CO.swift */,
+				F71FF7351CA01548007AEF68 /* Dictionary+Base.swift */,
+				F71FF73F1CA02921007AEF68 /* String+Base.swift */,
 			);
 			path = Conveyor;
 			sourceTree = "<group>";
@@ -119,7 +131,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F71FF7361CA01548007AEF68 /* Dictionary+Base.swift in Sources */,
+				F7CE4FD31C9310CF005039FA /* NSFileManager+CO.swift in Sources */,
+				F7CE4FD51C93110B005039FA /* Swift+CO.swift in Sources */,
 				F74CFA561C92BA9000B7C0B9 /* main.swift in Sources */,
+				F71FF7401CA02921007AEF68 /* String+Base.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +225,7 @@
 		F74CFA5A1C92BA9000B7C0B9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -216,6 +233,7 @@
 		F74CFA5B1C92BA9000B7C0B9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				HEADER_SEARCH_PATHS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -239,6 +257,7 @@
 				F74CFA5B1C92BA9000B7C0B9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
