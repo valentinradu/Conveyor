@@ -20,4 +20,9 @@ extension String {
         let end = self.startIndex.advancedBy(NSMaxRange(aRange))
         return self.lineRangeForRange(start..<end)
     }
+    
+    public var camelCaseString:String {
+        let set = NSCharacterSet(charactersInString: "-_.")
+        return self.componentsSeparatedByCharactersInSet(set).enumerate().map({$0.0 == 0 ? $0.1.lowercaseString : $0.1.lowercaseString.capitalizedString}).joinWithSeparator("") as String
+    }
 }

@@ -29,27 +29,17 @@ extension NSFileManager {
     func contentsOfDirectoryAtURL(url:NSURL) throws -> [NSURL] {
         return try contentsOfDirectoryAtURL(url, includingPropertiesForKeys: [NSURLIsDirectoryKey, NSURLIsPackageKey], options: [.SkipsHiddenFiles, .SkipsSubdirectoryDescendants])
     }
-    func openStringFileAtURL(url:NSURL, createIfNeeded:Bool, append:Bool, transform:String throws -> String) throws {
-        if createIfNeeded && !self.fileExistsAtPath(url.path!) {
-            self.createFileAtPath(url.path!, contents: nil, attributes: nil)
-        }
-        
-        guard let data = NSMutableData(contentsOfURL: url) else {throw Error.cantOpenFile(file: url.path!)}
-        guard let string = String(data: data, encoding: NSUTF8StringEncoding) else {throw Error.cantOpenFile(file: url.path!)}
-        let result = try transform(string)
-        
-        if let oData = result.dataUsingEncoding(NSUTF8StringEncoding) {
-            let handle = try NSFileHandle(forUpdatingURL: url)
-            if append {
-                handle.seekToEndOfFile()
-            }
-            else {
-                handle.seekToFileOffset(0)
-            }
-            handle.writeData(oData)
-            handle.truncateFileAtOffset(UInt64(oData.length))
-            handle.closeFile()
-        }
+    func contentsOfLocalizedDirectories() throws -> [NSURL] {
+        guard let languages = Optional(
+            try self.contentsOfDirectoryAtURL(try self.srcRoot()).filter({$0.pathExtension == "lproj"}))
+        where languages.count > 0 else {throw Error.xcodeProjIsNotLocalized}
+        return languages
+    }
+    func localizedStringsUrls() throws -> [NSURL] {
+        return try self.contentsOfLocalizedDirectories().map{NSURL(fileURLWithPath: "String.strings", relativeToURL: $0)}
+    }
+    func localizedStringsExtensionUrl() throws -> NSURL {
+        return NSURL(fileURLWithPath: "String+Localized.swift", relativeToURL: try self.srcRoot())
     }
 }
 

@@ -16,21 +16,25 @@ enum Error:ErrorType, CustomStringConvertible {
     case xcodePbxprojCantOpen
     case xcodePbxprojUnsupportedFormat
     case xcodeProjIsNotLocalized
-    case cantOpenFile(file:String)
-    case notAStringLiteral(data:[(String, String, Int)])
-    case patternNotFound(file:String)
+    case cantOpenFile
+    case failedSanitization
+    case patternNotFound
+    case invalidFile
+    case invalidData
     var description: String {
         switch self {
-        case .success(let arg) : return "\(NSLocalizedString("success", comment: "")), \(arg)"
-        case .urlNotFound(let arg)  : return "\(NSLocalizedString("urlNotFound", comment: "")) \(arg)"
-        case .xcodeProjNotFound(let arg)  : return "\(NSLocalizedString("xcodeProjNotFound", comment: "")) \(arg)"
-        case .xcodePbxprojNotFound(let arg)  : return "\(NSLocalizedString("xcodePbxprojNotFound", comment: "")) \(arg)"
-        case .xcodePbxprojCantOpen(let arg)  : return "\(NSLocalizedString("xcodePbxprojCantOpen", comment: "")) \(arg)"
-        case .xcodePbxprojUnsupportedFormat(let arg)  : return "\(NSLocalizedString("xcodePbxprojUnsupportedFormat", comment: "")) \(arg)"
-        case .cantOpenFile(let file)  : return "\(NSLocalizedString("cantOpenFile", comment: "")) \(file)"
-        case .xcodeProjIsNotLocalized(let arg)  : return "\(NSLocalizedString("xcodeProjIsNotLocalized", comment: "")) \(arg)"
-        case .notAStringLiteral(let data) : return "\(NSLocalizedString("notAStringLiteral", comment: "")) \n\(data.map{"\($0.0), \($0.1), \($0.2)"}.joinWithSeparator(", \n"))"
-        case .patternNotFound(let file) : return "\(NSLocalizedString("patternNotFound", comment: "")), \(file)"
+        case .success: return "\(NSLocalizedString("success", comment: ""))"
+        case .urlNotFound: return "\(NSLocalizedString("urlNotFound", comment: ""))"
+        case .xcodeProjNotFound: return "\(NSLocalizedString("xcodeProjNotFound", comment: ""))"
+        case .xcodePbxprojNotFound: return "\(NSLocalizedString("xcodePbxprojNotFound", comment: ""))"
+        case .xcodePbxprojCantOpen: return "\(NSLocalizedString("xcodePbxprojCantOpen", comment: ""))"
+        case .xcodePbxprojUnsupportedFormat  : return "\(NSLocalizedString("xcodePbxprojUnsupportedFormat", comment: ""))"
+        case .cantOpenFile: return "\(NSLocalizedString("cantOpenFile", comment: ""))"
+        case .xcodeProjIsNotLocalized: return "\(NSLocalizedString("xcodeProjIsNotLocalized", comment: ""))"
+        case .failedSanitization: return "\(NSLocalizedString("failedSanitization", comment: ""))"
+        case .patternNotFound: return "\(NSLocalizedString("patternNotFound", comment: ""))"
+        case .invalidFile: return "\(NSLocalizedString("invalidFile", comment: ""))"
+        case .invalidData: return "\(NSLocalizedString("invalidData", comment: ""))"
         }
     }
     func code() -> Int {
@@ -43,8 +47,10 @@ enum Error:ErrorType, CustomStringConvertible {
         case .xcodePbxprojUnsupportedFormat : return 106
         case .cantOpenFile : return 107
         case .xcodeProjIsNotLocalized : return 108
-        case .notAStringLiteral : return 109
+        case .failedSanitization : return 109
         case .patternNotFound : return 110
+        case .invalidFile : return 111
+        case .invalidData : return 112
         }
     }
 }
