@@ -8,6 +8,10 @@
 
 import Foundation
 
+protocol Action:CustomStringConvertible {
+    func listSelectors() -> [Selector]
+}
+
 protocol SearchParam {
     func objectFilter(_:[String:AnyObject]) -> Bool
     func sanitizeRegex() -> String

@@ -7,12 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F71FF7361CA01548007AEF68 /* Dictionary+Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71FF7351CA01548007AEF68 /* Dictionary+Base.swift */; };
 		F71FF7401CA02921007AEF68 /* String+Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71FF73F1CA02921007AEF68 /* String+Base.swift */; };
 		F71FF7441CA1694B007AEF68 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71FF7431CA1694B007AEF68 /* Project.swift */; };
 		F71FF7461CA169E6007AEF68 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71FF7451CA169E6007AEF68 /* LocalizedStrings.swift */; };
 		F71FF74E1CA16D07007AEF68 /* NSFileHandle+CO.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71FF74D1CA16D07007AEF68 /* NSFileHandle+CO.swift */; };
 		F74CFA561C92BA9000B7C0B9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74CFA551C92BA9000B7C0B9 /* main.swift */; };
+		F7845B871CA2A00A00812B23 /* Dictionary+Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7845B861CA2A00A00812B23 /* Dictionary+Base.swift */; };
+		F7A3C6E51CA4214800D3D45A /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = F7A3C6E41CA4214800D3D45A /* XMLDictionary.m */; };
 		F7CE4FD31C9310CF005039FA /* NSFileManager+CO.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CE4FD21C9310CF005039FA /* NSFileManager+CO.swift */; };
 		F7CE4FD51C93110B005039FA /* Swift+CO.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CE4FD41C93110B005039FA /* Swift+CO.swift */; };
 /* End PBXBuildFile section */
@@ -30,13 +31,18 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		F71FF7351CA01548007AEF68 /* Dictionary+Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "Dictionary+Base.swift"; path = "../Dictionary+Base.swift"; sourceTree = "<group>"; };
 		F71FF73F1CA02921007AEF68 /* String+Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "String+Base.swift"; sourceTree = "<group>"; };
 		F71FF7431CA1694B007AEF68 /* Project.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project.swift; sourceTree = "<group>"; };
 		F71FF7451CA169E6007AEF68 /* LocalizedStrings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LocalizedStrings.swift; sourceTree = "<group>"; };
 		F71FF74D1CA16D07007AEF68 /* NSFileHandle+CO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileHandle+CO.swift"; sourceTree = "<group>"; };
+		F74258051CA2F42000642D04 /* Conveyor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Conveyor-Bridging-Header.h"; sourceTree = "<group>"; };
+		F74258091CA2F5C700642D04 /* Templates.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Templates.h; sourceTree = "<group>"; };
+		F742580A1CA2F70000642D04 /* Macros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
 		F74CFA521C92BA9000B7C0B9 /* Conveyor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Conveyor; sourceTree = BUILT_PRODUCTS_DIR; };
 		F74CFA551C92BA9000B7C0B9 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		F7845B861CA2A00A00812B23 /* Dictionary+Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Base.swift"; sourceTree = "<group>"; };
+		F7A3C6E31CA4214800D3D45A /* XMLDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLDictionary.h; sourceTree = "<group>"; };
+		F7A3C6E41CA4214800D3D45A /* XMLDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLDictionary.m; sourceTree = "<group>"; };
 		F7CE4FD21C9310CF005039FA /* NSFileManager+CO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+CO.swift"; sourceTree = "<group>"; };
 		F7CE4FD41C93110B005039FA /* Swift+CO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Swift+CO.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -71,16 +77,29 @@
 		F74CFA541C92BA9000B7C0B9 /* Conveyor */ = {
 			isa = PBXGroup;
 			children = (
+				F7A3C6E61CA4215200D3D45A /* Libs */,
 				F74CFA551C92BA9000B7C0B9 /* main.swift */,
 				F71FF7431CA1694B007AEF68 /* Project.swift */,
 				F71FF74D1CA16D07007AEF68 /* NSFileHandle+CO.swift */,
 				F71FF7451CA169E6007AEF68 /* LocalizedStrings.swift */,
 				F7CE4FD41C93110B005039FA /* Swift+CO.swift */,
 				F7CE4FD21C9310CF005039FA /* NSFileManager+CO.swift */,
-				F71FF7351CA01548007AEF68 /* Dictionary+Base.swift */,
+				F7845B861CA2A00A00812B23 /* Dictionary+Base.swift */,
 				F71FF73F1CA02921007AEF68 /* String+Base.swift */,
+				F742580A1CA2F70000642D04 /* Macros.h */,
+				F74258091CA2F5C700642D04 /* Templates.h */,
+				F74258051CA2F42000642D04 /* Conveyor-Bridging-Header.h */,
 			);
 			path = Conveyor;
+			sourceTree = "<group>";
+		};
+		F7A3C6E61CA4215200D3D45A /* Libs */ = {
+			isa = PBXGroup;
+			children = (
+				F7A3C6E31CA4214800D3D45A /* XMLDictionary.h */,
+				F7A3C6E41CA4214800D3D45A /* XMLDictionary.m */,
+			);
+			name = Libs;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,14 +159,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F71FF7361CA01548007AEF68 /* Dictionary+Base.swift in Sources */,
 				F71FF74E1CA16D07007AEF68 /* NSFileHandle+CO.swift in Sources */,
 				F7CE4FD31C9310CF005039FA /* NSFileManager+CO.swift in Sources */,
 				F7CE4FD51C93110B005039FA /* Swift+CO.swift in Sources */,
 				F74CFA561C92BA9000B7C0B9 /* main.swift in Sources */,
+				F7845B871CA2A00A00812B23 /* Dictionary+Base.swift in Sources */,
 				F71FF7461CA169E6007AEF68 /* LocalizedStrings.swift in Sources */,
 				F71FF7441CA1694B007AEF68 /* Project.swift in Sources */,
 				F71FF7401CA02921007AEF68 /* String+Base.swift in Sources */,
+				F7A3C6E51CA4214800D3D45A /* XMLDictionary.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -237,16 +257,23 @@
 		F74CFA5A1C92BA9000B7C0B9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = "";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Conveyor/Conveyor-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		F74CFA5B1C92BA9000B7C0B9 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = "";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Conveyor/Conveyor-Bridging-Header.h";
 			};
 			name = Release;
 		};

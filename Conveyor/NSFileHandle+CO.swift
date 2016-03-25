@@ -8,23 +8,20 @@
 
 import Foundation
 
-protocol ExtractRule {
-    func run(_:String) throws -> [String:String]
+protocol Rule {
+    associatedtype RawType
+    associatedtype CanonicType
 }
 
-protocol InjectRule {
-    func run(_:[String:String]) throws -> String
+protocol ExtractRule:Rule {
+    func run(_:RawType) throws -> CanonicType
+}
+
+protocol InjectRule:Rule {
+    func run(_:CanonicType) throws -> RawType
 }
 
 extension NSFileHandle {
-    
-    convenience init(forUpdatingURL url: NSURL, createIfNeeded:Bool) throws {
-        let filemanager = NSFileManager.defaultManager()
-        if createIfNeeded && !filemanager.fileExistsAtPath(url.path!) {
-            guard filemanager.createFileAtPath(url.path!, contents: nil, attributes: nil) == true else {throw Error.cantOpenFile}
-        }
-        try self.init(forUpdatingURL:url)
-    }
     
     func writeData(data:NSData, offset:UInt64) {
         seekToFileOffset(offset)
@@ -56,7 +53,7 @@ extension NSFileHandle {
             var count = 1
             while string.startIndex != lineRange.startIndex {
                 lineRange = string.lineRangeForRange(lineRange.startIndex.advancedBy(-1)..<lineRange.startIndex)
-                count++
+                count += 1
             }
             
             return (string.substringWithRange(range), count)
@@ -90,22 +87,23 @@ extension NSFileHandle {
         return replacements
     }
     
-    func extract(rule:ExtractRule) throws -> [String:String] {
+    func extract<T:ExtractRule where T.RawType == String>(rule:T) throws -> T.CanonicType {
         let string = try self.string(0)
         return try rule.run(string)
     }
     
-    func inject(pairs:[String:String], rule:InjectRule) throws {
+    func inject<T:InjectRule where T.RawType == String>(pairs:T.CanonicType, rule:T) throws {
         guard let data = try rule.run(pairs).dataUsingEncoding(NSUTF8StringEncoding) else {throw Error.invalidData}
         writeData(data, offset: 0)
         self.truncateFileAtOffset(UInt64(data.length))
     }
     
-    func injectUnique(pairs:[String:String], rule:protocol<InjectRule, ExtractRule>) throws {
+    func injectUnique<T:ExtractRule, V:InjectRule, U:Hashable, X where T.RawType == V.RawType, T.CanonicType == V.CanonicType, T.RawType == String, T.CanonicType == Dictionary<U, X>>
+        (pairs:T.CanonicType, extractRule:T, injectRule:V) throws {
         guard pairs.count > 0 else {return}
-        var pairs = pairs
-        pairs.mergeInPlace(try extract(rule))
-        try inject(pairs, rule: rule)
+        var other = try extract(extractRule)
+        other.mergeInPlace(pairs)
+        try inject(other, rule: injectRule)
     }
 }
 

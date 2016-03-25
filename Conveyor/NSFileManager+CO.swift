@@ -36,10 +36,19 @@ extension NSFileManager {
         return languages
     }
     func localizedStringsUrls() throws -> [NSURL] {
-        return try self.contentsOfLocalizedDirectories().map{NSURL(fileURLWithPath: "String.strings", relativeToURL: $0)}
+        return try self.contentsOfLocalizedDirectories().map{NSURL(fileURLWithPath: "Strings.strings", relativeToURL: $0)}
     }
     func localizedStringsExtensionUrl() throws -> NSURL {
         return NSURL(fileURLWithPath: "String+Localized.swift", relativeToURL: try self.srcRoot())
+    }
+    func localizedStringsCSVUrl() throws -> NSURL {
+        return NSURL(fileURLWithPath: "Strings.csv", relativeToURL: try self.srcRoot())
+    }
+    func createFileAtUrlIfNeeded(url:NSURL, contents:NSData?, attributes:[String : AnyObject]?) throws {
+        guard let path = url.path else {throw Error.urlNotFound}
+        if !fileExistsAtPath(path) {
+            guard self.createFileAtPath(path, contents: contents, attributes: attributes) == true else {throw Error.cantCreateFile}
+        }
     }
 }
 

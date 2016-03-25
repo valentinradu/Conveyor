@@ -17,6 +17,7 @@ enum Error:ErrorType, CustomStringConvertible {
     case xcodePbxprojUnsupportedFormat
     case xcodeProjIsNotLocalized
     case cantOpenFile
+    case cantCreateFile
     case failedSanitization
     case patternNotFound
     case invalidFile
@@ -30,6 +31,7 @@ enum Error:ErrorType, CustomStringConvertible {
         case .xcodePbxprojCantOpen: return "\(NSLocalizedString("xcodePbxprojCantOpen", comment: ""))"
         case .xcodePbxprojUnsupportedFormat  : return "\(NSLocalizedString("xcodePbxprojUnsupportedFormat", comment: ""))"
         case .cantOpenFile: return "\(NSLocalizedString("cantOpenFile", comment: ""))"
+        case .cantCreateFile: return "\(NSLocalizedString("cantOpenFile", comment: ""))"
         case .xcodeProjIsNotLocalized: return "\(NSLocalizedString("xcodeProjIsNotLocalized", comment: ""))"
         case .failedSanitization: return "\(NSLocalizedString("failedSanitization", comment: ""))"
         case .patternNotFound: return "\(NSLocalizedString("patternNotFound", comment: ""))"
@@ -51,6 +53,7 @@ enum Error:ErrorType, CustomStringConvertible {
         case .patternNotFound : return 110
         case .invalidFile : return 111
         case .invalidData : return 112
+        case .cantCreateFile : return 113
         }
     }
 }
