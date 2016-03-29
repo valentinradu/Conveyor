@@ -30,33 +30,6 @@ do {
     else {
         assertionFailure()//should never get here because of the guard above
     }
-//
-//    
-//    /* Inject NSLocalizedStrings to String files */
-//    let languagesFiles = Dictionary(try languagesUrls.enumerate().map{
-//        (i:Int, value:NSURL) -> (String, NSFileHandle) in
-//        try filemanager.createFileAtUrlIfNeeded(value, contents: nil, attributes: nil)
-//        return (languages[i], try NSFileHandle(forUpdatingURL: value))
-//    })
-//    let localizedStringsAllLanguagesResult = try localizedStringsCSVFile.extract(LocalizedStringsExtractFromCSV())
-//    
-//    var languageMap = [String:[String:String]]()
-//    localizedStringsAllLanguagesResult.forEach {
-//        key, value in
-//        for (k, v) in value {
-//            if languageMap[k] == nil {languageMap[k] = [String:String]()}
-//            languageMap[k]?[key] = v
-//        }
-//    }
-//    
-//    try languagesFiles.forEach {
-//        key, value in
-//        try value.inject(languageMap[key]!, rule: LocalizedStringsInjectInStringsFile())
-//    }
-//    
-//    languagesFiles.forEach{$0.1.closeFile()}
-//    localizedStringsCSVFile.closeFile()
-    
 }
 catch let e as Error {
     exit(e)

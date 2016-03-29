@@ -67,7 +67,7 @@ struct Project:Action {
         pbx = projPbx
         
         commands = [
-            "locs":(try LocalizedStrings(), "Work with localized strings. Extract from project, inject into .strings files or .csv, etc.")
+            "locs":(try LocalizedStrings(project: self), "Work with localized strings. Extract from project, inject into .strings files or .csv, etc.")
         ]
         options = ["-h":(0, {args in return self.description}, "Show this help page")]
     }
@@ -114,7 +114,11 @@ struct Project:Action {
                         let file = try NSFileHandle(forUpdatingURL: url)
                         
                         let sanR = try file.sanitize(param.sanitizeRegex())
-                        guard sanR.count == 0 else { throw Error.failedSanitization(file: url.lastPathComponent ?? "", string: sanR) }
+                        do {
+                            guard sanR.count == 0 else { throw Error.failedSanitization(file: url.lastPathComponent ?? "", string: sanR) }
+                        } catch let e as Error {
+                            print(e)
+                        }
                         
                         let r = try file.replace(param.findRegex(), replaceRegex: param.replaceRegex(), transform: param.forwardTransform, dryRun: dryRun)
                         dispatch_group_async(group, serialQueue) {
@@ -124,7 +128,7 @@ struct Project:Action {
                         file.closeFile()
                     }
                     catch let e as CustomStringConvertible {
-                        print(e, " \(url.lastPathComponent ?? "")")
+                        print(e)
                     }
                     catch {
                         assertionFailure()

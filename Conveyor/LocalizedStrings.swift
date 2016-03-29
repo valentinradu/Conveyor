@@ -14,8 +14,8 @@ struct LocalizedStrings:Action {
     
     private let project:Project
     
-    init() throws {
-        project = try Project()
+    init(project p:Project) throws {
+        project = p
         commands = nil
         options = [
             "-h":(0, {args in return self.description}, "Show this help page"),
@@ -36,9 +36,10 @@ struct LocalizedStrings:Action {
         result.forEach {
             r in
             if let path = r.path.lastPathComponent {
+                arr.append("")
                 arr.append(path)
             }
-            arr.append(r.replacements.map({key, value in return "\(key) -> \(value)"}).joinWithSeparator("\r\n"))
+            arr.append(r.replacements.map({key, value in return "\(value) -> \(key)"}).joinWithSeparator("\r\n"))
         }
         
         return arr.joinWithSeparator("\r\n")
