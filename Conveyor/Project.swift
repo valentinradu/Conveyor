@@ -9,7 +9,38 @@
 import Foundation
 
 protocol Action:CustomStringConvertible {
-    func listSelectors() -> [Selector]
+    var commands:[String:(Action, String)]? {get}
+    var options:[String:(Int, (args:[String]) throws -> String, String)]? {get}
+    var help:String {get}
+}
+
+extension Action {
+    var help: String {
+        var names = [String]()
+        if let commands = self.commands where commands.count > 0 {
+            names.append("Commands:")
+            names.appendContentsOf(commands.map{key, item in return "\(key) : \(item.1)"} ?? [])
+            names.append("")
+        }
+        
+        if let options = self.options {
+            names.append("Options:")
+            names.appendContentsOf(options.map{key, item in return "\(key) : \(item.2)"} ?? [])
+        }
+        return names.joinWithSeparator("\r\n")
+    }
+    var description:String {
+        return self.help
+    }
+}
+
+extension Project {
+    var description: String {
+        var welcome = "\r\nConveyor 1.0. This tool is used to extract resources into extensions allowing the compiler to check them at compile time."
+        welcome.appendContentsOf("\r\n\r\n")
+        welcome.appendContentsOf(self.help)
+        return welcome
+    }
 }
 
 protocol SearchParam {
@@ -24,14 +55,21 @@ protocol ReplaceParam:SearchParam {
     func backwardTransform(_:String) -> String
 }
 
-struct Project {
+struct Project:Action {
     let supportedFileTypes = ["sourcecode.swift", "sourcecode.cpp.cpp", "sourcecode.c.objc", "sourcecode.c.c", "sourcecode.cpp.objcpp", "sourcecode.c.h", "sourcecode.cpp.h", "sourcecode.objj.h"]
     let pbx:[String:AnyObject]
+    private(set) var commands:[String:(Action, String)]?
+    private(set) var options:[String:(Int, (args:[String]) throws -> String, String)]?
     init() throws {
         let fileManager = NSFileManager.defaultManager()
         guard let projPbxData = NSData(contentsOfURL: try fileManager.pbxProjectFileUrl()) else {throw Error.xcodePbxprojCantOpen}
         guard let projPbx = try NSPropertyListSerialization.propertyListWithData(projPbxData, options: NSPropertyListMutabilityOptions.Immutable, format: nil) as? [String:AnyObject] else {throw Error.xcodePbxprojUnsupportedFormat}
         pbx = projPbx
+        
+        commands = [
+            "locs":(try LocalizedStrings(), "Work with localized strings. Extract from project, inject into .strings files or .csv, etc.")
+        ]
+        options = ["-h":(0, {args in return self.description}, "Show this help page")]
     }
     
     func listObjects() throws -> [String:AnyObject] {
@@ -55,7 +93,7 @@ struct Project {
         })
     }
     
-    func replaceInObjects(param:ReplaceParam) throws -> [(path:NSURL, replacements:[String:String])] {
+    func replaceInObjects(param:ReplaceParam, dryRun:Bool) throws -> [(path:NSURL, replacements:[String:String])] {
             let fileManager = NSFileManager.defaultManager()
             let group = dispatch_group_create()
             let serialQueue = dispatch_queue_create("Serial", DISPATCH_QUEUE_SERIAL)
@@ -75,10 +113,10 @@ struct Project {
                     do {
                         let file = try NSFileHandle(forUpdatingURL: url)
                         
-                        do {try file.sanitize(param.sanitizeRegex())}
-                        catch let e as Error {print(e, " \(url.lastPathComponent ?? "")")}
+                        let sanR = try file.sanitize(param.sanitizeRegex())
+                        guard sanR.count == 0 else { throw Error.failedSanitization(file: url.lastPathComponent ?? "", string: sanR) }
                         
-                        let r = try file.replace(param.findRegex(), replaceRegex: param.replaceRegex(), transform: param.forwardTransform)
+                        let r = try file.replace(param.findRegex(), replaceRegex: param.replaceRegex(), transform: param.forwardTransform, dryRun: dryRun)
                         dispatch_group_async(group, serialQueue) {
                             let r = (url, Dictionary(r.map{(param.backwardTransform($0.1), $0.0)}))
                             result.append(r)

@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "F74CFA511C92BA9000B7C0B9"
-               BuildableName = "Conveyor"
+               BuildableName = "conveyor.temp_caseinsensitive_rename"
                BlueprintName = "Conveyor"
                ReferencedContainer = "container:Conveyor.xcodeproj">
             </BuildableReference>
@@ -33,7 +33,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F74CFA511C92BA9000B7C0B9"
-            BuildableName = "Conveyor"
+            BuildableName = "conveyor.temp_caseinsensitive_rename"
             BlueprintName = "Conveyor"
             ReferencedContainer = "container:Conveyor.xcodeproj">
          </BuildableReference>
@@ -42,7 +42,7 @@
       </AdditionalOptions>
    </TestAction>
    <LaunchAction
-      buildConfiguration = "Debug"
+      buildConfiguration = "Release"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       launchStyle = "0"
@@ -57,7 +57,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F74CFA511C92BA9000B7C0B9"
-            BuildableName = "Conveyor"
+            BuildableName = "conveyor.temp_caseinsensitive_rename"
             BlueprintName = "Conveyor"
             ReferencedContainer = "container:Conveyor.xcodeproj">
          </BuildableReference>
@@ -76,7 +76,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "F74CFA511C92BA9000B7C0B9"
-            BuildableName = "Conveyor"
+            BuildableName = "conveyor.temp_caseinsensitive_rename"
             BlueprintName = "Conveyor"
             ReferencedContainer = "container:Conveyor.xcodeproj">
          </BuildableReference>

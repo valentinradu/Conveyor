@@ -23,7 +23,7 @@ STRING (
 
 NSString const *TemplateLocalizedStringsExtensionItem =
 STRING (
-    let %@ = NSLocalizedString("%@", comment: "")
+    let %@ = NSBundle.mainBundle().localizedStringForKey("%@", value: nil, table: nil)
 );
 
 NSString const *TemplateLocalizedStringsExtension =

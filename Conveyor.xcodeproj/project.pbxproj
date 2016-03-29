@@ -16,15 +16,17 @@
 		F7A3C6E51CA4214800D3D45A /* XMLDictionary.m in Sources */ = {isa = PBXBuildFile; fileRef = F7A3C6E41CA4214800D3D45A /* XMLDictionary.m */; };
 		F7CE4FD31C9310CF005039FA /* NSFileManager+CO.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CE4FD21C9310CF005039FA /* NSFileManager+CO.swift */; };
 		F7CE4FD51C93110B005039FA /* Swift+CO.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CE4FD41C93110B005039FA /* Swift+CO.swift */; };
+		F7D9191A1CA943EA005EE304 /* conveyor in CopyFiles */ = {isa = PBXBuildFile; fileRef = F74CFA521C92BA9000B7C0B9 /* conveyor */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		F74CFA501C92BA9000B7C0B9 /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 12;
-			dstPath = usr/share/man/man1;
-			dstSubfolderSpec = 7;
+			dstPath = /usr/local/bin;
+			dstSubfolderSpec = 0;
 			files = (
+				F7D9191A1CA943EA005EE304 /* conveyor in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -38,7 +40,7 @@
 		F74258051CA2F42000642D04 /* Conveyor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Conveyor-Bridging-Header.h"; sourceTree = "<group>"; };
 		F74258091CA2F5C700642D04 /* Templates.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Templates.h; sourceTree = "<group>"; };
 		F742580A1CA2F70000642D04 /* Macros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
-		F74CFA521C92BA9000B7C0B9 /* Conveyor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Conveyor; sourceTree = BUILT_PRODUCTS_DIR; };
+		F74CFA521C92BA9000B7C0B9 /* conveyor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = conveyor; sourceTree = BUILT_PRODUCTS_DIR; };
 		F74CFA551C92BA9000B7C0B9 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		F7845B861CA2A00A00812B23 /* Dictionary+Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Base.swift"; sourceTree = "<group>"; };
 		F7A3C6E31CA4214800D3D45A /* XMLDictionary.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLDictionary.h; sourceTree = "<group>"; };
@@ -69,7 +71,7 @@
 		F74CFA531C92BA9000B7C0B9 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F74CFA521C92BA9000B7C0B9 /* Conveyor */,
+				F74CFA521C92BA9000B7C0B9 /* conveyor */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -119,7 +121,7 @@
 			);
 			name = Conveyor;
 			productName = Conveyor;
-			productReference = F74CFA521C92BA9000B7C0B9 /* Conveyor */;
+			productReference = F74CFA521C92BA9000B7C0B9 /* conveyor */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -260,7 +262,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = "";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = conveyor;
 				SWIFT_OBJC_BRIDGING_HEADER = "Conveyor/Conveyor-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -272,7 +274,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				HEADER_SEARCH_PATHS = "";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = conveyor;
 				SWIFT_OBJC_BRIDGING_HEADER = "Conveyor/Conveyor-Bridging-Header.h";
 			};
 			name = Release;

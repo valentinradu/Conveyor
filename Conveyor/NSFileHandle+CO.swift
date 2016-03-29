@@ -40,7 +40,7 @@ extension NSFileHandle {
         return string
     }
     
-    func sanitize(regex:String) throws {
+    func sanitize(regex:String) throws -> [(String, Int)] {
         let string = try self.string(0)
         let r = try NSRegularExpression(pattern: regex, options: [])
         let results = r.matchesInString(string, options: .ReportCompletion, range: NSRange(location: 0, length: string.characters.count))
@@ -58,11 +58,10 @@ extension NSFileHandle {
             
             return (string.substringWithRange(range), count)
         }
-        
-        guard t.count == 0 else {throw Error.failedSanitization}
+        return t
     }
     
-    func replace(findRegex:String, replaceRegex:String, transform:String->String) throws -> [String:String] {
+    func replace(findRegex:String, replaceRegex:String, transform:String->String, dryRun:Bool) throws -> [String:String] {
         var string = try self.string(0)
         let r = try NSRegularExpression(pattern: findRegex, options: [])
         let results = r.matchesInString(string, options: .ReportCompletion, range: NSRange(location: 0, length: string.characters.count))
@@ -77,8 +76,10 @@ extension NSFileHandle {
             let replacement = "\(transform(match))"
             let start = string.startIndex.advancedBy(range.location)
             let end = string.startIndex.advancedBy(range.location + range.length)
-            string.replaceRange(start..<end, with: replacement)
-            offset += replacement.characters.count - range.length
+            if !dryRun {
+                string.replaceRange(start..<end, with: replacement)
+                offset += replacement.characters.count - range.length
+            }
             replacements[match] = replacement
         }
         

@@ -18,25 +18,31 @@ enum Error:ErrorType, CustomStringConvertible {
     case xcodeProjIsNotLocalized
     case cantOpenFile
     case cantCreateFile
-    case failedSanitization
+    case failedSanitization(file:String, string:[(String, Int)])
     case patternNotFound
     case invalidFile
     case invalidData
+    case invalidArgument(arg:String)
+    case noArguments
+    case wrongArgumentsCount(arg:String, given:Int, expected:Int)
     var description: String {
         switch self {
-        case .success: return "\(NSLocalizedString("success", comment: ""))"
-        case .urlNotFound: return "\(NSLocalizedString("urlNotFound", comment: ""))"
-        case .xcodeProjNotFound: return "\(NSLocalizedString("xcodeProjNotFound", comment: ""))"
-        case .xcodePbxprojNotFound: return "\(NSLocalizedString("xcodePbxprojNotFound", comment: ""))"
-        case .xcodePbxprojCantOpen: return "\(NSLocalizedString("xcodePbxprojCantOpen", comment: ""))"
-        case .xcodePbxprojUnsupportedFormat  : return "\(NSLocalizedString("xcodePbxprojUnsupportedFormat", comment: ""))"
-        case .cantOpenFile: return "\(NSLocalizedString("cantOpenFile", comment: ""))"
-        case .cantCreateFile: return "\(NSLocalizedString("cantOpenFile", comment: ""))"
-        case .xcodeProjIsNotLocalized: return "\(NSLocalizedString("xcodeProjIsNotLocalized", comment: ""))"
-        case .failedSanitization: return "\(NSLocalizedString("failedSanitization", comment: ""))"
-        case .patternNotFound: return "\(NSLocalizedString("patternNotFound", comment: ""))"
-        case .invalidFile: return "\(NSLocalizedString("invalidFile", comment: ""))"
-        case .invalidData: return "\(NSLocalizedString("invalidData", comment: ""))"
+        case .success: return "Success"
+        case .urlNotFound: return "Could not find resource at url."
+        case .xcodeProjNotFound: return "Xcode project not found. Run this tool in a directory that contains a valid Xcode project."
+        case .xcodePbxprojNotFound: return "Pbxproj not found. Check if the Xcode project contains one."
+        case .xcodePbxprojCantOpen: return "Can't open Pbxproj."
+        case .xcodePbxprojUnsupportedFormat  : return "It seems that the format used by Pbxproj is not supported."
+        case .cantOpenFile: return "Can't open file at url."
+        case .cantCreateFile: return "Can't create file at url"
+        case .xcodeProjIsNotLocalized: return "It the Xcode project is not localized. You first need to add the supported localizations."
+        case .failedSanitization(let file, let pairs): return "\(pairs.count) strings in \(file) failed sanitization:\r\n\(pairs.map{"\($0.0) on line \($0.1)"}.joinWithSeparator("\r\n"))"
+        case .patternNotFound: return "Pattern not found."
+        case .invalidFile: return "The file seems to be not quite we expected."
+        case .invalidData: return "The data seems to be not quite we expected."
+        case .invalidArgument(let arg): return "\(arg) is not a valid option or command. Try conveyor -h or conveyor command -h (e.g. conveyor locs -h)"
+        case .noArguments: return "No arguments given. Try conveyor -h or conveyor command -h (e.g. conveyor locs -h)"
+        case .wrongArgumentsCount(let arg, let given, let expected): return "Wrong arguments count for \(arg). Expected \(expected). Given \(given)"
         }
     }
     func code() -> Int {
@@ -54,6 +60,9 @@ enum Error:ErrorType, CustomStringConvertible {
         case .invalidFile : return 111
         case .invalidData : return 112
         case .cantCreateFile : return 113
+        case .invalidArgument : return 114
+        case .noArguments : return 115
+        case .wrongArgumentsCount : return 116
         }
     }
 }

@@ -8,44 +8,29 @@
 import Foundation
 
 do {
-    let filemanager = NSFileManager.defaultManager()
+    
+    let arguments = NSProcessInfo.processInfo().arguments
     let project = try Project()
     
-    /* Replace NSLocalizedStrings */
-    var localizedStringsResult = Dictionary(try project.replaceInObjects(LocalizedStringsReplaceInSource()).flatMap{$0.replacements})
+    guard arguments.count > 1 else {throw Error.noArguments}
+    guard [Array(project.commands!.keys), Array(project.options!.keys)].flatMap({$0}).contains(arguments[1]) else {throw Error.invalidArgument(arg: arguments[1])}
     
-    /* Inject NSLocalizedStrings to extension */
-    try filemanager.createFileAtUrlIfNeeded(filemanager.localizedStringsExtensionUrl(), contents: nil, attributes: nil)
-    let localizedStringsExtensionFile = try NSFileHandle(forUpdatingURL: try filemanager.localizedStringsExtensionUrl())
-    try localizedStringsExtensionFile.injectUnique(
-        localizedStringsResult,
-        extractRule: LocalizedStringsExtractFromExtension(),
-        injectRule: LocalizedStringsInjectInExtension()
-    )
-    
-//    /* Inject NSLocalizedStrings to CSV */
-//    if localizedStringsResult.count == 0 {
-//        localizedStringsResult = try localizedStringsExtensionFile.extract(LocalizedStringsExtractFromExtension())
-//    }
-//    
-//    let nameExtract = {
-//        (url:NSURL) -> String? in
-//        return url.URLByDeletingLastPathComponent?.pathComponents?.last?.componentsSeparatedByString(".").first
-//    }
-//    let languagesUrls = try filemanager.localizedStringsUrls().filter{nameExtract($0)?.lowercaseString != "base"}
-//    let languages = languagesUrls.flatMap{nameExtract($0)}
-//    
-//    let localizedStringsAllLang = Dictionary(localizedStringsResult.map{
-//        _, value in
-//        return (value, Dictionary(languages.map{($0, "")}))
-//    })
-//    try filemanager.createFileAtUrlIfNeeded(filemanager.localizedStringsCSVUrl(), contents: nil, attributes: nil)
-//    let localizedStringsCSVFile = try NSFileHandle(forUpdatingURL: try filemanager.localizedStringsCSVUrl())
-//    try localizedStringsCSVFile.injectUnique(
-//        localizedStringsAllLang,
-//        extractRule: LocalizedStringsExtractFromCSV(),
-//        injectRule: LocalizedStringsInjectInCSV()
-//    )
+    if let command = project.commands?[arguments[1]] {
+        guard arguments.count > 2 else {throw Error.wrongArgumentsCount(arg: arguments[1], given: arguments.count - 2, expected: 1)}
+        guard command.0.options!.keys.contains(arguments[2]) else {throw Error.invalidArgument(arg: arguments[2])}
+        
+        let option = command.0.options![arguments[2]]!
+        guard arguments.count - 3 == option.0 else {throw Error.wrongArgumentsCount(arg: arguments[2], given: arguments.count - 3, expected: option.0)}
+        print(try option.1(args: Array(arguments[3..<arguments.count])))
+    }
+    else if let option = project.options?[arguments[1]] {
+        guard arguments.count - 2 == option.0 else {throw Error.wrongArgumentsCount(arg: arguments[1], given: arguments.count - 2, expected: option.0)}
+        print(try option.1(args: Array(arguments[2..<arguments.count])))
+    }
+    else {
+        assertionFailure()//should never get here because of the guard above
+    }
+//
 //    
 //    /* Inject NSLocalizedStrings to String files */
 //    let languagesFiles = Dictionary(try languagesUrls.enumerate().map{
@@ -70,7 +55,6 @@ do {
 //    }
 //    
 //    languagesFiles.forEach{$0.1.closeFile()}
-    localizedStringsExtensionFile.closeFile()
 //    localizedStringsCSVFile.closeFile()
     
 }
