@@ -42,7 +42,7 @@ enum Error:ErrorType, CustomStringConvertible {
         case .cantOpenFile: return "Can't open file at url."
         case .cantCreateFile: return "Can't create file at url"
         case .xcodeProjIsNotLocalized: return "The Xcode project is not localized. You first need to add the supported localizations in the project settings or explicitly specify the languages e.g. conveyor locs -sf-st en de"
-        case .failedSanitization(let file, let pairs): return "\(pairs.count) strings in \(file) failed sanitization:\r\n\(pairs.map{"\($0.0) on line \($0.1)"}.joinWithSeparator("\r\n"))"
+        case .failedSanitization(let file, let pairs): return "\(pairs.count) strings in \(file) could not be extracted:\r\n\(pairs.map{"\($0.0) on line \($0.1)"}.joinWithSeparator("\r\n"))"
         case .patternNotFound: return "Pattern not found."
         case .invalidFile: return "The file seems to be not quite we expected."
         case .invalidData: return "The data seems to be not quite we expected."

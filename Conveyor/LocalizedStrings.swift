@@ -76,7 +76,7 @@ class LocalizedStrings:Action, Context {
             while response != "Y" && response != "n" {
                 response = readLine(stripNewline: true)
                 if response != "Y" && response != "n" {
-                    print("Invalid answer")
+                    print("Invalid answer. Please try again.")
                 }
             }
             
