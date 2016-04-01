@@ -34,12 +34,14 @@ class LocalizedStrings:Action, Context {
     }
     func t(args:[String]) throws -> String? {
         let selfPriority = availableOptions!["-t"]!.priority
-        guard let higherOps = options?.flatMap({
+        let higherPriorities = options!.flatMap({
             (pair:(String, [String])) -> Int? in
             guard let other = availableOptions?[pair.0] where other.priority > selfPriority else {return nil}
             return other.priority
         })
-        where higherOps.count > 0 else {throw Error.flagPairsNotSatisfied(flag: "-t")}
+        guard higherPriorities.count > 0 else {
+            throw Error.flagPairsNotSatisfied(flag: "-t")
+        }
         self.testFirst = true;
         return nil
     }
