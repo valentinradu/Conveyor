@@ -103,7 +103,7 @@ extension Context {
 typealias OptionsReturn = ([String]) throws -> String?
 protocol Action:Api, CustomStringConvertible {
     var help:String {get}
-    func run() throws
+    func run() throws -> String?
 }
 
 extension Action {
@@ -181,11 +181,11 @@ class Project:Action, Context {
         availableOptions = ["-h":OptionDescription(runable: {_ in return self.description}, description: "Show this help page")]
     }
     
-    func run() throws {
+    func run() throws -> String?{
         if let command = self.command {
             guard var action = availableCommands?[command]?.0 else {throw Error.invalidArgument(arg: command)}
             try action.parse(otherArgs)
-            try action.run()
+            return try action.run()
         }
         if let options = self.options {
             var actions = [(OptionsReturn, [String])]()
@@ -194,9 +194,14 @@ class Project:Action, Context {
                 actions.append((action, value))
             }
             
-            try actions.forEach{try $0.0($0.1)}
+            return try actions.reduce([String](), combine: {
+                (result:[String], action:(OptionsReturn, [String])) -> [String] in
+                guard let s = try action.0(action.1) else {return result}
+                return result + [s]
+            }).nullify()?.joinWithSeparator("\n")
         }
-        guard command != nil || options != nil else {assertionFailure(); return/*the input was sanitize already, this should never happen*/}
+        guard command != nil || options != nil else {assertionFailure(); throw Error.unknownError/*the input was sanitize already, this should never happen*/}
+        return nil
     }
     
     func listObjects() throws -> [String:AnyObject] {

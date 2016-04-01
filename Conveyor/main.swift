@@ -9,8 +9,10 @@ import Foundation
 
 do {
     var project = try Project()
-    try project.parse(Array(NSProcessInfo.processInfo().arguments.dropFirst()))
-    try project.run()
+    let args = Array(NSProcessInfo.processInfo().arguments.dropFirst())
+    guard args.count > 0 else {throw Error.noArguments}
+    try project.parse(args)
+    print(try project.run() ?? "")
 }
 catch let e as Error {
     exit(e)

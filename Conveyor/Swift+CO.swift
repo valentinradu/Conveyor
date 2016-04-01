@@ -27,6 +27,10 @@ enum Error:ErrorType, CustomStringConvertible {
     case samePriorityArgs(arg1:String, arg2:String)
     case wrongArgumentsCount(arg:String, given:Int, expected:Range<Int>)
     case notACountryCode(code:String)
+    case unknownError
+    case interrupt
+    case noTokensFound
+    case flagPairsNotSatisfied(flag:String)
     var description: String {
         switch self {
         case .success: return "Success"
@@ -47,6 +51,10 @@ enum Error:ErrorType, CustomStringConvertible {
         case .wrongArgumentsCount(let arg, let given, let expected): return "Wrong arguments count for \(arg). Expected between \(expected.startIndex) and \(expected.endIndex - 1). Given \(given)"
         case .notACountryCode(let code): return "\"\(code)\" doesn't look like a country code. Ignoring it."
         case .samePriorityArgs(let arg1, let arg2): return "\(arg1) can't be called with \(arg2)"
+        case .unknownError : return "Unknown error"
+        case .interrupt : return "Stoping"
+        case .noTokensFound : return "No tokens found"
+        case .flagPairsNotSatisfied(let flag) : return "\(flag) needs to be paired with an higher order operation e.g. conveyor locs \(flag) -sf-st"
         }
     }
     func code() -> Int {
@@ -69,6 +77,10 @@ enum Error:ErrorType, CustomStringConvertible {
         case .wrongArgumentsCount : return 116
         case .notACountryCode : return 117
         case .samePriorityArgs : return 118
+        case .unknownError : return 119
+        case .interrupt : return 120
+        case .noTokensFound : return 121
+        case .flagPairsNotSatisfied : return 122
         }
     }
 }
