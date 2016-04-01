@@ -64,7 +64,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "locs -t -sf-st"
+            argument = "locs -t -r-sf-ex"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>
