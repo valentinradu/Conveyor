@@ -8,26 +8,29 @@
 
 import Foundation
 
-struct LocalizedStrings:Action {
-    private(set) var commands:[String:(Action, String)]?
-    private(set) var options:[String:(Int, (args:[String]) throws -> String, String)]?
-    
-    private let project:Project
+class LocalizedStrings:Action, Context {
+    var command:String?
+    var options:[(String, [String])]?
+    var otherArgs:[String]?
+    var availableCommands:[String:(protocol<Action,Context>, String)]?
+    var availableOptions:[String:OptionDescription]?
+    var project:Project
+    private (set) var forceful = false
     
     init(project p:Project) throws {
         project = p
-        commands = nil
-        options = [
-            "-h":(0, {args in return self.description}, "Show this help page"),
-            "-sf-dr": (0, sfdr, "Makes a replace dry run on the source files, indicating any issues and showing all the valid strings found."),
-            "-r-sf-ex":(0, rsfex, "Replace NSLocalizedStrings in source files and put them into a String extension (String+Localized.swift)."),
-            "-sf-st":(0, sfst, "Get NSLocalizedStrings from source files into strings files based on Xcode localization settings (e.g. en/Strings.strings)."),
-            "-ex-st":(0, exst, "Get strings from the extension (String+Localized.swift) into strings files based on Xcode localization settings (e.g. en/Strings.strings)."),
-            "-st-csv":(0, stcsv, "Get strings from the strings files into a CSV file (Strings.csv)."),
-            "-csv-st":(0, csvst, "Get strings from the CSV file into the strings files.")
+        availableCommands = nil
+        availableOptions = [
+            "-h":OptionDescription(runable: {_ in return self.description}, description: "Show this help page", priority: 0),
+            "-f":OptionDescription(runable: {_ in self.forceful = true; return nil}, description: "Show this help page", priority: 1),
+            "-sf-dr":OptionDescription(runable: sfdr, description: "Makes a replace dry run on the source files, indicating any issues and showing all the valid strings found.", priority: 2),
+            "-r-sf-ex":OptionDescription(runable: rsfex, description: "Replace NSLocalizedStrings in source files and put them into a String extension (String+Localized.swift).", priority: 2),
+            "-sf-st":OptionDescription(runable: sfst, description: "Get NSLocalizedStrings from source files into strings files based on Xcode localization settings (e.g. en/Strings.strings).", priority: 2, paramCount: 0...1024),
+            "-ex-st":OptionDescription(runable: exst, description: "Get strings from the extension (String+Localized.swift) into strings files based on Xcode localization settings (e.g. en/Strings.strings).", priority: 2),
+            "-st-csv":OptionDescription(runable: stcsv, description: "Get strings from the strings files into a CSV file (Strings.csv).", priority: 2),
+            "-csv-st":OptionDescription(runable: csvst, description: "Get strings from the CSV file into the strings files.", priority: 2)
         ]
     }
-    
     func sfdr(args:[String]) throws -> String {
         let result = try project.replaceInObjects(LocalizedStringsReplaceInSource(), dryRun:true)
         
@@ -44,17 +47,30 @@ struct LocalizedStrings:Action {
         
         return arr.joinWithSeparator("\r\n")
     }
-    
     func rsfex(args:[String]) throws -> String {
         let result = Dictionary(try project.replaceInObjects(LocalizedStringsReplaceInSource(), dryRun:false).flatMap{$0.replacements})
         try putResultsToExtensionFile(result)
         return result.count > 0 ? "\(result.count) strings extracted to String+Localized.swift." : "No strings found."
     }
     func sfst(args:[String]) throws -> String {
-        let result = Dictionary(try project.replaceInObjects(LocalizedStringsReplaceInSource(), dryRun:true).flatMap{$0.replacements})
         let filemanager = NSFileManager.defaultManager()
+        let r = try NSRegularExpression(pattern: "^[a-z]{2,3}(?:-[A-Z]{2,3}(?:-[a-zA-Z]{4})?)?$", options: [])
+        for arg in args {
+            do {
+                guard r.numberOfMatchesInString(arg, options: .ReportCompletion, range: NSRange(location: 0, length: arg.characters.count)) != 0 else {throw Error.notACountryCode(code: arg)}
+                let url = try languageURLFromName(arg)
+                try filemanager.createDirectoryAtURL(url, withIntermediateDirectories: true, attributes: nil)
+            }
+            catch let e as Error {
+                print(e)
+            }
+            catch let e as NSError {
+                print(e)
+            }
+        }
+        let result = Dictionary(try project.replaceInObjects(LocalizedStringsReplaceInSource(), dryRun:true).flatMap{$0.replacements})
         let languages = try filemanager.localizedStringsUrls().filter({extractLanguageFromURL($0)?.lowercaseString != "base"}).flatMap{extractLanguageFromURL($0)}
-        try putResultsToStringsFiles(Dictionary(languages.map{($0, result)}))
+        try putResultsToStringsFiles(Dictionary(languages.map{($0, Dictionary(result.map{($0.1, "")}))}))
         return result.count > 0 ? "\(result.count) strings found" : "No strings found."
     }
     func exst(args:[String]) throws -> String {
@@ -62,7 +78,7 @@ struct LocalizedStrings:Action {
         let extensionFile = try NSFileHandle(forUpdatingURL: try filemanager.localizedStringsExtensionUrl())
         let result = try extensionFile.extract(LocalizedStringsExtractFromExtension())
         let languages = try filemanager.localizedStringsUrls().filter({extractLanguageFromURL($0)?.lowercaseString != "base"}).flatMap{extractLanguageFromURL($0)}
-        try putResultsToStringsFiles(Dictionary(languages.map{($0, result)}))
+        try putResultsToStringsFiles(Dictionary(languages.map{($0, Dictionary(result.map{($0.1, "")}))}))
         return result.count > 0 ? "\(result.count) strings put into the string files." : "No strings found in extension."
     }
     func stcsv(args:[String]) throws -> String {
@@ -102,7 +118,8 @@ struct LocalizedStrings:Action {
         try filemanager.createFileAtUrlIfNeeded(filemanager.localizedStringsExtensionUrl(), contents: nil, attributes: nil)
         let extensionFile = try NSFileHandle(forUpdatingURL: try filemanager.localizedStringsExtensionUrl())
         try extensionFile.injectUnique(
-            result,
+            self.forceful,
+            pairs: result,
             extractRule: LocalizedStringsExtractFromExtension(),
             injectRule: LocalizedStringsInjectInExtension()
         )
@@ -112,13 +129,17 @@ struct LocalizedStrings:Action {
     func putResultsToStringsFiles(result:[String:[String:String]]) throws {
         let filemanager = NSFileManager.defaultManager()
         let languagesUrls = try filemanager.localizedStringsUrls().filter{extractLanguageFromURL($0)?.lowercaseString != "base"}
+        if languagesUrls.count == 0 {throw Error.xcodeProjIsNotLocalized}
+        
         for url in languagesUrls {
+            try filemanager.createFileAtUrlIfNeeded(url, contents: nil, attributes: nil)
             guard let name = extractLanguageFromURL(url) else {continue}
             guard let dic = result[name] else {continue}
             try filemanager.createFileAtUrlIfNeeded(url, contents: nil, attributes: nil)
             let stringFile = try NSFileHandle(forUpdatingURL: url)
             try stringFile.injectUnique(
-                dic,
+                self.forceful,
+                pairs: dic,
                 extractRule: LocalizedStringsExtractFromStringsFile(),
                 injectRule: LocalizedStringsInjectInStringsFile()
             )
@@ -131,7 +152,8 @@ struct LocalizedStrings:Action {
         try filemanager.createFileAtUrlIfNeeded(filemanager.localizedStringsCSVUrl(), contents: nil, attributes: nil)
         let CSVFile = try NSFileHandle(forUpdatingURL: try filemanager.localizedStringsCSVUrl())
         try CSVFile.injectUnique(
-            result,
+            self.forceful,
+            pairs:result,
             extractRule: LocalizedStringsExtractFromCSV(),
             injectRule: LocalizedStringsInjectInCSV()
         )
@@ -141,12 +163,28 @@ struct LocalizedStrings:Action {
     func extractLanguageFromURL(url:NSURL) -> String? {
         return url.URLByDeletingLastPathComponent?.pathComponents?.last?.componentsSeparatedByString(".").first
     }
+    
+    func languageURLFromName(name:String) throws -> NSURL {
+        let fileManager = NSFileManager.defaultManager()
+        let srcRoot = try fileManager.srcRoot()
+        return srcRoot.URLByAppendingPathComponent("\(name).lproj")
+    }
+    
+    func run() throws {
+        guard command == nil else {throw Error.invalidArgument(arg: command!)}
+        var iterator = options?.enumerate().generate()
+        while let item = iterator?.next() {
+            guard let option = availableOptions?[item.element.0] else {throw Error.invalidArgument(arg: item.element.0)}
+            try option.runable(item.element.1)
+        }
+    }
 }
 
 struct LocalizedStringsExtractFromStringsFile:ExtractRule {
     typealias RawType = String
     typealias CanonicType = [String:String]
     func run(string:String) throws -> [String:String] {
+        guard string.characters.count > 0 else {return [:]}
         return string.propertyListFromStringsFileFormat()
     }
 }

@@ -100,11 +100,22 @@ extension NSFileHandle {
     }
     
     func injectUnique<T:ExtractRule, V:InjectRule, U:Hashable, X where T.RawType == V.RawType, T.CanonicType == V.CanonicType, T.RawType == String, T.CanonicType == Dictionary<U, X>>
-        (pairs:T.CanonicType, extractRule:T, injectRule:V) throws {
+        (override:Bool, pairs:T.CanonicType, extractRule:T, injectRule:V) throws {
         guard pairs.count > 0 else {return}
-        var other = try extract(extractRule)
-        other.mergeInPlace(pairs)
-        try inject(other, rule: injectRule)
+        let other = try extract(extractRule)
+        
+        var left, right : [U : X]
+        if override {
+            left = other
+            right = pairs
+        }
+        else {
+            left = pairs
+            right = other
+        }
+        
+        left.mergeInPlace(right)
+        try inject(left, rule: injectRule)
     }
 }
 

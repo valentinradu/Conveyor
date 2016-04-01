@@ -24,7 +24,9 @@ enum Error:ErrorType, CustomStringConvertible {
     case invalidData
     case invalidArgument(arg:String)
     case noArguments
-    case wrongArgumentsCount(arg:String, given:Int, expected:Int)
+    case samePriorityArgs(arg1:String, arg2:String)
+    case wrongArgumentsCount(arg:String, given:Int, expected:Range<Int>)
+    case notACountryCode(code:String)
     var description: String {
         switch self {
         case .success: return "Success"
@@ -35,14 +37,16 @@ enum Error:ErrorType, CustomStringConvertible {
         case .xcodePbxprojUnsupportedFormat  : return "It seems that the format used by Pbxproj is not supported."
         case .cantOpenFile: return "Can't open file at url."
         case .cantCreateFile: return "Can't create file at url"
-        case .xcodeProjIsNotLocalized: return "It the Xcode project is not localized. You first need to add the supported localizations."
+        case .xcodeProjIsNotLocalized: return "The Xcode project is not localized. You first need to add the supported localizations in the project settings or explicitly specify the languages e.g. conveyor locs -sf-st en de"
         case .failedSanitization(let file, let pairs): return "\(pairs.count) strings in \(file) failed sanitization:\r\n\(pairs.map{"\($0.0) on line \($0.1)"}.joinWithSeparator("\r\n"))"
         case .patternNotFound: return "Pattern not found."
         case .invalidFile: return "The file seems to be not quite we expected."
         case .invalidData: return "The data seems to be not quite we expected."
         case .invalidArgument(let arg): return "\(arg) is not a valid option or command. Try conveyor -h or conveyor command -h (e.g. conveyor locs -h)"
         case .noArguments: return "No arguments given. Try conveyor -h or conveyor command -h (e.g. conveyor locs -h)"
-        case .wrongArgumentsCount(let arg, let given, let expected): return "Wrong arguments count for \(arg). Expected \(expected). Given \(given)"
+        case .wrongArgumentsCount(let arg, let given, let expected): return "Wrong arguments count for \(arg). Expected between \(expected.startIndex) and \(expected.endIndex - 1). Given \(given)"
+        case .notACountryCode(let code): return "\"\(code)\" doesn't look like a country code. Ignoring it."
+        case .samePriorityArgs(let arg1, let arg2): return "\(arg1) can't be called with \(arg2)"
         }
     }
     func code() -> Int {
@@ -63,6 +67,8 @@ enum Error:ErrorType, CustomStringConvertible {
         case .invalidArgument : return 114
         case .noArguments : return 115
         case .wrongArgumentsCount : return 116
+        case .notACountryCode : return 117
+        case .samePriorityArgs : return 118
         }
     }
 }
