@@ -18,12 +18,12 @@ STRING (
 
 NSString const *TemplateLocalizedStringsCSV =
 STRING (
-"Key";%@\r\n%@
+        "Key";%@\r\n%@
 );
 
 NSString const *TemplateLocalizedStringsExtensionItem =
 STRING (
-        let %@ = #NSLocalizedString("%@", comment: "")
+        let %@ = NSBundle.mainBundle().localizedStringForKey("%@", value:"?", table:Optional.None)
 );
 
 NSString const *TemplateLocalizedStringsExtension =
