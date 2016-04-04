@@ -29,14 +29,14 @@ STRING (
 NSString const *TemplateLocalizedStringsExtension =
 STRING (
         //This file was automatically generated with Conveyor Resource Manager. Manually modifying it is probably a bad idea.",
-        import Foundation
-        struct LocalizedStrings {
-            %@
-        }
-        extension String {
-            static var localized:LocalizedStrings {
-                return LocalizedStrings()
-            }
+        import Foundation\n
+        struct LocalizedStrings {\n
+            %@\n
+        }\n
+        extension String {\n
+            static var localized:LocalizedStrings {\n
+                return LocalizedStrings()\n
+            }\n
         }
 );
 
