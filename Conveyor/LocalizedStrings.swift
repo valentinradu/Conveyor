@@ -49,11 +49,16 @@ class LocalizedStrings:ActionContext {
         try testAsk(arr)
     }
     func test(result:[String:[String:String]]) throws {
-        let arr = result.flatMap{[$0.0] + $0.1.flatMap{[$0.0, $0.1] + ["\n"]}}
+        let arr = Array<String>(result.flatMap{
+            var item = $0.0
+            item.appendContentsOf("\n")
+            item.appendContentsOf($0.1.flatMap{"\($0.0) = \"\($0.1)\""}.joinWithSeparator("\n"))
+            return item
+        })
         try testAsk(arr)
     }
     func test(result:[String:String]) throws {
-        let arr = result.flatMap{[$0.0, $0.1]}
+        let arr = result.flatMap{"\($0.0) = \"\($0.1)\""}
         try testAsk(arr)
     }
     func testAsk(results:[String]) throws {
