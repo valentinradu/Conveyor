@@ -1,1 +1,0 @@
-import Foundation struct LocalizedStrings { let unknownError = NSBundle.mainBundle().localizedStringForKey("unknown_error", value: ((void *)0), table: ((void *)0)) } extension String { static var localized:LocalizedStrings { return LocalizedStrings() } }

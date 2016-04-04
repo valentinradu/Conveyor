@@ -101,12 +101,34 @@ extension Context {
     }
 }
 typealias OptionsReturn = ([String]) throws -> String?
-protocol Action:Api, CustomStringConvertible {
+protocol Runable:Api, CustomStringConvertible {
     var help:String {get}
     func run() throws -> String?
 }
+protocol Action:Runable {
+    var forceful:Bool {set get}
+    var testFirst:Bool {set get}
+    mutating func checkTest() throws
+}
+protocol Command:Runable {}
 
-extension Action {
+protocol ActionContext: Action, Context {}
+extension ActionContext {
+    mutating func checkTest() throws {
+        let selfPriority = availableOptions!["-t"]!.priority
+        let higherPriorities = options!.flatMap({
+            (pair:(String, [String])) -> Int? in
+            guard let other = availableOptions?[pair.0] where other.priority > selfPriority else {return nil}
+            return other.priority
+        })
+        guard higherPriorities.count > 0 else {
+            throw Error.flagPairsNotSatisfied(flag: "-t")
+        }
+        self.testFirst = true;
+    }
+}
+
+extension Runable {
     var help: String {
         var names = [String]()
         if let commands = self.availableCommands where commands.count > 0 {
@@ -161,7 +183,7 @@ struct OptionDescription {
     }
 }
 
-class Project:Action, Context {
+class Project:Command, Context {
     let supportedFileTypes = ["sourcecode.swift", "sourcecode.cpp.cpp", "sourcecode.c.objc", "sourcecode.c.c", "sourcecode.cpp.objcpp", "sourcecode.c.h", "sourcecode.cpp.h", "sourcecode.objj.h"]
     let pbx:[String:AnyObject]
     var command:String?

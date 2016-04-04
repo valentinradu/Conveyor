@@ -8,22 +8,22 @@
 
 import Foundation
 
-class LocalizedStrings:Action, Context {
+class LocalizedStrings:ActionContext {
     var command:String?
     var options:[(String, [String])]?
     var otherArgs:[String]?
     var availableCommands:[String:(protocol<Action,Context>, String)]?
     var availableOptions:[String:OptionDescription]?
     var project:Project
-    private (set) var forceful = false
-    private (set) var testFirst = false
+    var forceful = false
+    var testFirst = false
     
     init(project p:Project) throws {
         project = p
         availableCommands = nil
         availableOptions = [
             "-h":OptionDescription(runable: {_ in return self.description}, description: "Show this help page", priority: 0),
-            "-t":OptionDescription(runable: t, description: "First makes a search on the source files, indicating any issues and showing all the valid strings found.", priority: 1),
+            "-t":OptionDescription(runable: {[weak self] _ in try self?.checkTest(); return nil}, description: "First makes a search on the source files, indicating any issues and showing all the valid strings found.", priority: 1),
             "-f":OptionDescription(runable: {_ in self.forceful = true; return nil}, description: "Overwrite the strings already present in the target file.", priority: 2),
             "-r-sf-ex":OptionDescription(runable: rsfex, description: "Replace NSLocalizedStrings in source files and put them into a String extension (String+Localized.swift).", priority: 3),
             "-sf-st":OptionDescription(runable: sfst, description: "Get NSLocalizedStrings from source files into strings files based on Xcode localization settings (e.g. en/Strings.strings).", priority: 3, paramCount: 0...1024),
@@ -31,19 +31,6 @@ class LocalizedStrings:Action, Context {
             "-st-csv":OptionDescription(runable: stcsv, description: "Get strings from the strings files into a CSV file (Strings.csv).", priority: 3),
             "-csv-st":OptionDescription(runable: csvst, description: "Get strings from the CSV file into the strings files.", priority: 3)
         ]
-    }
-    func t(args:[String]) throws -> String? {
-        let selfPriority = availableOptions!["-t"]!.priority
-        let higherPriorities = options!.flatMap({
-            (pair:(String, [String])) -> Int? in
-            guard let other = availableOptions?[pair.0] where other.priority > selfPriority else {return nil}
-            return other.priority
-        })
-        guard higherPriorities.count > 0 else {
-            throw Error.flagPairsNotSatisfied(flag: "-t")
-        }
-        self.testFirst = true;
-        return nil
     }
     func test(param:ReplaceParam) throws {
         let result = try project.replaceInObjects(param, dryRun:true)
@@ -157,10 +144,22 @@ class LocalizedStrings:Action, Context {
     }
     func csvst(args:[String]) throws -> String {
         let filemanager = NSFileManager.defaultManager()
-        let csvFile = try NSFileHandle(forUpdatingURL: try filemanager.localizedStringsCSVUrl())
+        let url = try filemanager.localizedStringsCSVUrl()
+        let csvFile = try NSFileHandle(forUpdatingURL: url)
         let result = try csvFile.extract(LocalizedStringsExtractFromCSV())
         if self.testFirst {try test(result)}
-        try putResultsToStringsFiles(result)
+        
+        var dic = [String:[String:String]]()
+        result.forEach {
+            item in
+            item.1.forEach {
+                pair in
+                if dic[pair.0] == nil {dic[pair.0] = [String:String]()}
+                dic[pair.0]![item.0] = pair.1
+            }
+        }
+        
+        try putResultsToStringsFiles(dic)
         return result.count > 0 ? "\(result.count) tokens injected into the string files." : "No tokens found."
     }
     
@@ -405,7 +404,7 @@ struct LocalizedStringsExtractFromExtension:ExtractRule {
     typealias RawType = String
     typealias CanonicType = [String:String]
     func run(string:String) throws -> [String:String] {
-        let regex = "let (.+?) = NSLocalizedString\\(\"(.+?)\",.*?\\)"
+        let regex = "let (.+?) = NSBundle\\.mainBundle\\(\\)\\.localizedStringForKey\\(\"(.+?)\",.*?\\)"
         let r = try NSRegularExpression(pattern: regex, options: [])
         let searchResults = r.matchesInString(string, options: .ReportCompletion, range: NSRange(location: 0, length: string.characters.count))
         return Dictionary(searchResults.map{
