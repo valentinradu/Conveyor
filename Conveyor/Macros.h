@@ -12,6 +12,7 @@
 #define STRINGIZE(x) #x
 #define STRINGIZE2(x) STRINGIZE(x)
 #define STRING(text) @ STRINGIZE2(text)
-#define DEFER(id) id
+#define EMPTY_MACRO
+#define DEFER(id) id EMPTY_MACRO
 
 #endif /* Macros_h */
