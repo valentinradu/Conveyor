@@ -19,8 +19,8 @@ class ViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
         _ = NSLocalizedString("\(1.0)", comment:"")
-        _ = NSLocalizedString("first_string", comment:"")
-        _ = NSLocalizedString("fourth_string", comment:"")
+        _ = String.localized.firstString
+        _ = String.localized.fourthString
     }
 
 

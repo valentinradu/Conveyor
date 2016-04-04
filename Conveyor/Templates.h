@@ -23,7 +23,7 @@ STRING (
 
 NSString const *TemplateLocalizedStringsExtensionItem =
 STRING (
-        let %@ = DEFER(NSLocalizedString)("%@", comment: "")
+        let %@ = #NSLocalizedString("%@", comment: "")
 );
 
 NSString const *TemplateLocalizedStringsExtension =
