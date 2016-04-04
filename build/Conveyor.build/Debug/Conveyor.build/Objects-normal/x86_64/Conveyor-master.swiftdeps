@@ -1,5 +1,0 @@
-version: "Apple Swift version 2.1.1 (swiftlang-700.1.101.15 clang-700.1.81)"
-options: "a1640364dc11c3095756d2b73c04c1fa"
-build_time: [511001379, 846923000]
-inputs:
-  "/Users/vradu/Playgrounds/Conveyor/Conveyor/main.swift": [511001179, 0]
