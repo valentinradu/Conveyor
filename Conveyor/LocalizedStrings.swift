@@ -8,7 +8,7 @@
 
 import Foundation
 
-class LocalizedStrings:ActionContext {
+class LocalizedStrings:Action, Context {
     var command:String?
     var options:[(String, [String])]?
     var otherArgs:[String]?
@@ -22,15 +22,13 @@ class LocalizedStrings:ActionContext {
         project = p
         availableCommands = nil
         availableOptions = [
-            "-h":OptionDescription(runable: {_ in return self.description}, description: "Show this help page", priority: 0),
-            "-t":OptionDescription(runable: {[weak self] _ in try self?.checkTest(); return nil}, description: "First makes a search on the source files, indicating any issues and showing all the valid strings found.", priority: 1),
-            "-f":OptionDescription(runable: {_ in self.forceful = true; return nil}, description: "Overwrite the strings already present in the target file.", priority: 2),
             "-r-sf-ex":OptionDescription(runable: rsfex, description: "Replace NSLocalizedStrings in source files and put them into a String extension (String+Localized.swift).", priority: 3),
             "-sf-st":OptionDescription(runable: sfst, description: "Get NSLocalizedStrings from source files into strings files based on Xcode localization settings (e.g. en/Strings.strings).", priority: 3, paramCount: 0...1024),
             "-ex-st":OptionDescription(runable: exst, description: "Get strings from the extension (String+Localized.swift) into strings files based on Xcode localization settings (e.g. en/Strings.strings).", priority: 3),
             "-st-csv":OptionDescription(runable: stcsv, description: "Get strings from the strings files into a CSV file (Strings.csv).", priority: 3),
             "-csv-st":OptionDescription(runable: csvst, description: "Get strings from the CSV file into the strings files.", priority: 3)
         ]
+        availableOptions?.mergeInPlace(defaultOptions())
     }
     func test(param:ReplaceParam) throws {
         let result = try project.replaceInObjects(param, dryRun:true)
@@ -41,6 +39,7 @@ class LocalizedStrings:ActionContext {
             r in
             if let path = r.path.lastPathComponent {
                 arr.append("")
+                
                 arr.append(path)
             }
             arr.append(r.replacements.map({key, value in return "\(value) -> \(key)"}).joinWithSeparator("\r\n"))
@@ -223,20 +222,6 @@ class LocalizedStrings:ActionContext {
         let fileManager = NSFileManager.defaultManager()
         let srcRoot = try fileManager.srcRoot()
         return srcRoot.URLByAppendingPathComponent("\(name).lproj")
-    }
-    
-    func run() throws -> String? {
-        guard command == nil else {throw Error.invalidArgument(arg: command!)}
-        var iterator = options?.enumerate().generate()
-        var arr = [String]()
-        while let item = iterator?.next() {
-            guard let option = availableOptions?[item.element.0] else {throw Error.invalidArgument(arg: item.element.0)}
-            if let s = try option.runable(item.element.1) {
-                arr.append(s)
-            }
-        }
-        
-        return arr.nullify()?.joinWithSeparator("\n")
     }
 }
 

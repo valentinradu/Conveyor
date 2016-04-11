@@ -11,6 +11,42 @@
 #import "Macros.h"
 #import <Foundation/Foundation.h>
 
+NSString const *TemplateColorExtensionPaletteItem =
+STRING (
+    CWPalette(name: "%@", dic:[\n%@\n])
+);
+
+NSString const *TemplateColorExtensionDicItem =
+STRING (
+    "%@": UIColor(red: %@, green: %@, blue: %@, alpha: %@)
+);
+
+NSString const *TemplateColorExtensionLetItem =
+STRING (
+    let %@:UIColor
+);
+
+NSString const *TemplateColorExtensionInitItem =
+STRING (
+    self.%@ = dic["%@"]!
+);
+
+NSString const *TemplateColorExtension =
+STRING (
+    //This file was automatically generated with Conveyor Resource Manager. Manually modifying it is probably a bad idea."\n
+    import UIKit\n
+    class CWPalette: NSObject {\n
+        static let availablePalettes = [\n%@\n]\n
+        let name:String\n
+        %@\n
+        
+        init(name:String, dic:[String:UIColor]) {\n
+            self.name = name\n
+            %@
+        }\n
+    }\n
+);
+
 NSString const *TemplateLocalizedStringsCSVItem =
 STRING (
 %@;%@
@@ -28,7 +64,7 @@ STRING (
 
 NSString const *TemplateLocalizedStringsExtension =
 STRING (
-        //This file was automatically generated with Conveyor Resource Manager. Manually modifying it is probably a bad idea.",
+        //This file was automatically generated with Conveyor Resource Manager. Manually modifying it is probably a bad idea.\n
         import Foundation\n
         struct LocalizedStrings {\n
             %@\n

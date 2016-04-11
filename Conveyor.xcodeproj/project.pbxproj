@@ -11,6 +11,7 @@
 		F71FF7441CA1694B007AEF68 /* Project.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71FF7431CA1694B007AEF68 /* Project.swift */; };
 		F71FF7461CA169E6007AEF68 /* LocalizedStrings.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71FF7451CA169E6007AEF68 /* LocalizedStrings.swift */; };
 		F71FF74E1CA16D07007AEF68 /* NSFileHandle+CO.swift in Sources */ = {isa = PBXBuildFile; fileRef = F71FF74D1CA16D07007AEF68 /* NSFileHandle+CO.swift */; };
+		F746EEA31CB29F6E00D9511C /* Colors.swift in Sources */ = {isa = PBXBuildFile; fileRef = F746EEA21CB29F6E00D9511C /* Colors.swift */; };
 		F74CFA561C92BA9000B7C0B9 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = F74CFA551C92BA9000B7C0B9 /* main.swift */; };
 		F7845B871CA2A00A00812B23 /* Dictionary+Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7845B861CA2A00A00812B23 /* Dictionary+Base.swift */; };
 		F797B3481CAE9560005F7D93 /* Array+Base.swift in Sources */ = {isa = PBXBuildFile; fileRef = F797B3471CAE9560005F7D93 /* Array+Base.swift */; };
@@ -18,6 +19,7 @@
 		F7CE4FD31C9310CF005039FA /* NSFileManager+CO.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CE4FD21C9310CF005039FA /* NSFileManager+CO.swift */; };
 		F7CE4FD51C93110B005039FA /* Swift+CO.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7CE4FD41C93110B005039FA /* Swift+CO.swift */; };
 		F7D9191A1CA943EA005EE304 /* conveyor in CopyFiles */ = {isa = PBXBuildFile; fileRef = F74CFA521C92BA9000B7C0B9 /* conveyor */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		F7E9F8831CB3A630003A8547 /* NSColor+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = F7E9F8821CB3A630003A8547 /* NSColor+Hex.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -41,6 +43,7 @@
 		F74258051CA2F42000642D04 /* Conveyor-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Conveyor-Bridging-Header.h"; sourceTree = "<group>"; };
 		F74258091CA2F5C700642D04 /* Templates.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Templates.h; sourceTree = "<group>"; };
 		F742580A1CA2F70000642D04 /* Macros.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Macros.h; sourceTree = "<group>"; };
+		F746EEA21CB29F6E00D9511C /* Colors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Colors.swift; sourceTree = "<group>"; };
 		F74CFA521C92BA9000B7C0B9 /* conveyor */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = conveyor; sourceTree = BUILT_PRODUCTS_DIR; };
 		F74CFA551C92BA9000B7C0B9 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		F7845B861CA2A00A00812B23 /* Dictionary+Base.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Base.swift"; sourceTree = "<group>"; };
@@ -49,6 +52,7 @@
 		F7A3C6E41CA4214800D3D45A /* XMLDictionary.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLDictionary.m; sourceTree = "<group>"; };
 		F7CE4FD21C9310CF005039FA /* NSFileManager+CO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSFileManager+CO.swift"; sourceTree = "<group>"; };
 		F7CE4FD41C93110B005039FA /* Swift+CO.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Swift+CO.swift"; sourceTree = "<group>"; };
+		F7E9F8821CB3A630003A8547 /* NSColor+Hex.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "NSColor+Hex.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -86,11 +90,13 @@
 				F71FF7431CA1694B007AEF68 /* Project.swift */,
 				F71FF74D1CA16D07007AEF68 /* NSFileHandle+CO.swift */,
 				F71FF7451CA169E6007AEF68 /* LocalizedStrings.swift */,
+				F746EEA21CB29F6E00D9511C /* Colors.swift */,
 				F7CE4FD41C93110B005039FA /* Swift+CO.swift */,
 				F7CE4FD21C9310CF005039FA /* NSFileManager+CO.swift */,
 				F7845B861CA2A00A00812B23 /* Dictionary+Base.swift */,
 				F71FF73F1CA02921007AEF68 /* String+Base.swift */,
 				F797B3471CAE9560005F7D93 /* Array+Base.swift */,
+				F7E9F8821CB3A630003A8547 /* NSColor+Hex.swift */,
 				F742580A1CA2F70000642D04 /* Macros.h */,
 				F74258091CA2F5C700642D04 /* Templates.h */,
 				F74258051CA2F42000642D04 /* Conveyor-Bridging-Header.h */,
@@ -165,8 +171,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				F71FF74E1CA16D07007AEF68 /* NSFileHandle+CO.swift in Sources */,
+				F746EEA31CB29F6E00D9511C /* Colors.swift in Sources */,
 				F7CE4FD31C9310CF005039FA /* NSFileManager+CO.swift in Sources */,
 				F797B3481CAE9560005F7D93 /* Array+Base.swift in Sources */,
+				F7E9F8831CB3A630003A8547 /* NSColor+Hex.swift in Sources */,
 				F7CE4FD51C93110B005039FA /* Swift+CO.swift in Sources */,
 				F74CFA561C92BA9000B7C0B9 /* main.swift in Sources */,
 				F7845B871CA2A00A00812B23 /* Dictionary+Base.swift in Sources */,

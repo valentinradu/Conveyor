@@ -6,6 +6,13 @@
 //  Copyright © 2016 Valentin Radu. All rights reserved.
 //
 
+//Strings
+//Colors
+//Notifications
+//Images
+//Selectors
+
+
 import Foundation
 
 protocol Api {
@@ -108,13 +115,12 @@ protocol Runable:Api, CustomStringConvertible {
 protocol Action:Runable {
     var forceful:Bool {set get}
     var testFirst:Bool {set get}
-    mutating func checkTest() throws
+    func checkTest() throws
 }
 protocol Command:Runable {}
 
-protocol ActionContext: Action, Context {}
-extension ActionContext {
-    mutating func checkTest() throws {
+extension Action where Self:Context, Self:AnyObject {
+    func checkTest() throws {
         let selfPriority = availableOptions!["-t"]!.priority
         let higherPriorities = options!.flatMap({
             (pair:(String, [String])) -> Int? in
@@ -124,7 +130,26 @@ extension ActionContext {
         guard higherPriorities.count > 0 else {
             throw Error.flagPairsNotSatisfied(flag: "-t")
         }
-        self.testFirst = true;
+    }
+    func defaultOptions() -> [String:OptionDescription] {
+        return [
+        "-h":OptionDescription(runable: {_ in return self.description}, description: "Show this help page", priority: 0),
+        "-t":OptionDescription(runable: {[weak self] _ in try self?.checkTest(); self?.testFirst = true; return nil}, description: "First makes a search on the source files, indicating any issues and showing all the valid tokens found.", priority: 1),
+        "-f":OptionDescription(runable: {[weak self] _ in self?.forceful = true; return nil}, description: "Overwrite the tokens already present in the target file.", priority: 2)
+        ]
+    }
+    func run() throws -> String? {
+        guard command == nil else {throw Error.invalidArgument(arg: command!)}
+        var iterator = options?.enumerate().generate()
+        var arr = [String]()
+        while let item = iterator?.next() {
+            guard let option = availableOptions?[item.element.0] else {throw Error.invalidArgument(arg: item.element.0)}
+            if let s = try option.runable(item.element.1) {
+                arr.append(s)
+            }
+        }
+        
+        return arr.nullify()?.joinWithSeparator("\n")
     }
 }
 
@@ -198,7 +223,8 @@ class Project:Command, Context {
         pbx = projPbx
         
         availableCommands = [
-            "locs":(try LocalizedStrings(project:self), "Work with localized strings. Extract from project, inject into .strings files or .csv, etc.")
+            "locs":(try LocalizedStrings(project:self), "Work with localized strings. Extract from project, inject into .strings files or .csv."),
+            "colors":(try Colors(project:self), "Import colors from all .clr palette files found in the project.")
         ]
         availableOptions = ["-h":OptionDescription(runable: {_ in return self.description}, description: "Show this help page")]
     }

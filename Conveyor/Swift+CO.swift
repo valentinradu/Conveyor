@@ -30,6 +30,7 @@ enum Error:ErrorType, CustomStringConvertible {
     case unknownError
     case interrupt
     case noTokensFound
+    case noColorPalettesFound
     case flagPairsNotSatisfied(flag:String)
     var description: String {
         switch self {
@@ -55,6 +56,7 @@ enum Error:ErrorType, CustomStringConvertible {
         case .interrupt : return "Stoping"
         case .noTokensFound : return "No tokens found"
         case .flagPairsNotSatisfied(let flag) : return "\(flag) needs to be paired with an higher order operation e.g. conveyor locs \(flag) -sf-st"
+        case .noColorPalettesFound : return "No color palettes found in project."
         }
     }
     func code() -> Int {
@@ -81,6 +83,7 @@ enum Error:ErrorType, CustomStringConvertible {
         case .interrupt : return 120
         case .noTokensFound : return 121
         case .flagPairsNotSatisfied : return 122
+        case .noColorPalettesFound : return 123
         }
     }
 }

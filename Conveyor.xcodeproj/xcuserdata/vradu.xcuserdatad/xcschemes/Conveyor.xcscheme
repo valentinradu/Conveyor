@@ -64,7 +64,7 @@
       </BuildableProductRunnable>
       <CommandLineArguments>
          <CommandLineArgument
-            argument = "locs -st-csv -f -t"
+            argument = "colors -clr-ex"
             isEnabled = "YES">
          </CommandLineArgument>
       </CommandLineArguments>

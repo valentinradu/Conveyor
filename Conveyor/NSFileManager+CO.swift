@@ -30,8 +30,7 @@ extension NSFileManager {
         return try contentsOfDirectoryAtURL(url, includingPropertiesForKeys: [NSURLIsDirectoryKey, NSURLIsPackageKey], options: [.SkipsHiddenFiles, .SkipsSubdirectoryDescendants])
     }
     func contentsOfLocalizedDirectories() throws -> [NSURL] {
-        guard let languages = Optional(
-            try self.contentsOfDirectoryAtURL(try self.srcRoot()).filter({$0.pathExtension == "lproj"}))
+        guard let languages = Optional(try self.contentsOfDirectoryAtURL(try self.srcRoot()).filter({$0.pathExtension == "lproj"}))
         where languages.count > 0 else {throw Error.xcodeProjIsNotLocalized}
         return languages
     }
@@ -41,6 +40,9 @@ extension NSFileManager {
     func localizedStringsExtensionUrl() throws -> NSURL {
         return NSURL(fileURLWithPath: "String+Localized.swift", relativeToURL: try self.srcRoot())
     }
+    func colorsExtensionUrl() throws -> NSURL {
+        return NSURL(fileURLWithPath: "CWPalette.swift", relativeToURL: try self.srcRoot())
+    }
     func localizedStringsCSVUrl() throws -> NSURL {
         return NSURL(fileURLWithPath: "Strings.csv", relativeToURL: try self.srcRoot())
     }
@@ -49,6 +51,11 @@ extension NSFileManager {
         if !fileExistsAtPath(path) {
             guard self.createFileAtPath(path, contents: contents, attributes: attributes) == true else {throw Error.cantCreateFile}
         }
+    }
+    func colorPalettesUrls() throws -> [NSURL] {
+        guard let colors = Optional(try self.contentsOfDirectoryAtURL(try self.srcRoot()).filter({$0.pathExtension == "clr"}))
+        where colors.count > 0 else {throw Error.noColorPalettesFound}
+        return colors
     }
 }
 
