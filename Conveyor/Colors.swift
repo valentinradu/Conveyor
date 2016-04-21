@@ -47,11 +47,11 @@ class Colors:Action, Context {
                     let hex = list.colorWithKey(key)!.hex()
                     return (key, hex)
                 }
-                return (name, Dictionary(colors))
+                return (name.camelCaseString, Dictionary(colors))
             }
         )
         try putResultsToExtensionFile(palettes)
-        return "clrex"
+        return "Found \(palettes.count) palettes. Successfully insterted them into the extension."
     }
     
     func putResultsToExtensionFile(result:[String:[String:String]]) throws {
@@ -72,10 +72,34 @@ class Colors:Action, Context {
         typealias CanonicType = [String:[String:String]]
         func run(string:RawType) throws -> CanonicType {
             let nameRegex = "CWPalette\\(name:\\s\"(.+)\",\\sdic:\\[\\n((.|\\n)+?)\\]\\)"
-            let r = try NSRegularExpression(pattern: nameRegex, options: [])
-            let searchResults = r.matchesInString(string, options: .ReportCompletion, range: NSRange(location: 0, length: string.characters.count))
+            let reg = try NSRegularExpression(pattern: nameRegex, options: [])
+            let searchResults = reg.matchesInString(string, options: .ReportCompletion, range: NSRange(location: 0, length: string.characters.count))
             
-            return [String:[String:String]]()
+            return Dictionary(try searchResults.flatMap{
+                (r:NSTextCheckingResult) throws -> (String, [String : String]) in
+                
+                let colorsStrings = string.substringWithRange(r.rangeAtIndex(2))
+                let colorsRegex = "\"(.+?)\":\\sUIColor\\(red:\\s(.+?),\\sgreen:\\s(.+?),\\sblue:\\s(.+?),\\salpha:\\s(.+?)\\)"
+                let reg = try NSRegularExpression(pattern: colorsRegex, options: [])
+                
+                let dic = Dictionary(colorsStrings.componentsSeparatedByString(",\n").flatMap {
+                    (line:String) -> [(String, String)] in
+                    let colorsResults = reg.matchesInString(line, options: .ReportCompletion, range: NSRange(location: 0, length: line.characters.count));
+                    return colorsResults.flatMap {
+                        (cr:NSTextCheckingResult) -> (String, String)? in
+                        let name = line.substringWithRange(cr.rangeAtIndex(1))
+                        guard let red = Float(line.substringWithRange(cr.rangeAtIndex(2))) else {return nil}
+                        guard let green = Float(line.substringWithRange(cr.rangeAtIndex(3))) else {return nil}
+                        guard let blue = Float(line.substringWithRange(cr.rangeAtIndex(4))) else {return nil}
+                        guard let alpha = Float(line.substringWithRange(cr.rangeAtIndex(5))) else {return nil}
+                        
+                        let color = NSColor(red: CGFloat(red), green: CGFloat(Float(green)), blue: CGFloat(Float(blue)), alpha: CGFloat(Float(alpha)))
+                        return (name, color.hex())
+                    }
+                })
+                
+                return (String(string.substringWithRange(r.rangeAtIndex(1))).camelCaseString, dic)
+            })
         }
     }
     
@@ -93,7 +117,7 @@ class Colors:Action, Context {
                 return String(format:TemplateColorExtensionPaletteItem, name.camelCaseString, colors.joinWithSeparator(",\n"))
             })
             
-            let colors = Dictionary(dic.flatMap{$0.1})
+            let colors = Dictionary(dic.flatMap{Dictionary($0.1.map{($0.camelCaseString, $1)})})
             
             let lets = colors.map {
                 name, color in
@@ -107,12 +131,6 @@ class Colors:Action, Context {
         }
     }
 }
-
-
-
-
-
-
 
 
 
